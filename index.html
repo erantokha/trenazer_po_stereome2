@@ -2,66 +2,35 @@
 <html lang="ru">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Тренажёр формул</title>
   <style>
-    :root {
-      --bg:#0f1115; --card:#171a21; --text:#e7eaf0; --muted:#9aa3b2;
-      --accent:#4da3ff; --good:#38d39f; --bad:#ff6b6b;
-    }
+    :root { --bg:#0f1115; --card:#171a21; --text:#e7eaf0; --muted:#9aa3b2; --accent:#4da3ff; --good:#38d39f; --bad:#ff6b6b; }
     *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--text);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial;
-      -webkit-text-size-adjust:100%;
-    }
-    .wrap{max-width:900px;margin:0 auto;padding:16px}
-    .card{
-      background:var(--card);border:1px solid #232835;border-radius:16px;
-      padding:16px;box-shadow:0 8px 20px rgba(0,0,0,.22)
-    }
-    h1{margin:0 0 10px;font-size:20px;line-height:1.25}
-    .row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    body{margin:0;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,"Helvetica Neue",Arial}
+    .wrap{max-width:940px;margin:24px auto;padding:16px}
+    .card{background:var(--card);border:1px solid #232835;border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    h1{margin:0 0 8px;font-size:22px}
+    .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
     .grow{flex:1}
     .progress{height:8px;background:#0c0f14;border-radius:999px;overflow:hidden}
     .progress > span{display:block;height:100%;background:var(--accent);width:0%}
-    .qtext{font-size:18px;line-height:1.4;margin:14px 0 6px;word-break:break-word}
+    .qtext{font-size:18px;line-height:1.45;margin:14px 0 6px}
     .opts{display:grid;gap:10px;margin:10px 0}
-    .opt{
-      padding:14px;background:#11141a;border:1px solid #232835;border-radius:12px;
-      cursor:pointer;display:flex;gap:10px;align-items:flex-start
-    }
-    .opt input{
-      width:22px;height:22px;margin-top:1px;flex:0 0 auto;
-    }
-    .opt .txt{line-height:1.35;word-break:break-word}
+    .opt{padding:12px 14px;background:#11141a;border:1px solid #232835;border-radius:12px;cursor:pointer}
+    .opt input{margin-right:10px;transform:translateY(1px)}
     .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
-    button{
-      border:1px solid #2a3140;background:#11141a;color:var(--text);
-      padding:12px 14px;border-radius:12px;cursor:pointer;touch-action:manipulation;
-      font-size:16px;min-width:100px
-    }
+    button{border:1px solid #2a3140;background:#11141a;color:var(--text);padding:10px 14px;border-radius:12px;cursor:pointer}
     button.primary{background:var(--accent);border-color:transparent;color:#07131f}
     button.ghost{background:transparent}
     button:disabled{opacity:.5;cursor:not-allowed}
     .timer{font-variant-numeric:tabular-nums}
-    .table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid #232835;border-radius:12px;margin-top:10px}
-    table{width:100%;border-collapse:collapse;min-width:720px}
+    table{width:100%;border-collapse:collapse;margin-top:10px}
     th,td{border-bottom:1px solid #232835;padding:10px 8px;text-align:left;vertical-align:top}
     th{color:var(--muted);font-weight:600}
-    .ok{color:var(--good)} .no{color:var(--bad)}
+    .ok{color:var(--good)}
+    .no{color:var(--bad)}
     .hidden{display:none}
-
-    @media (max-width: 520px){
-      .wrap{padding:12px}
-      h1{font-size:18px}
-      .qtext{font-size:17px}
-      .opt{padding:14px}
-      .opt input{width:24px;height:24px}
-      .btns button{flex:1}
-      table{min-width:640px}
-    }
   </style>
   <script>
     const shuffle = (arr) => { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]];} return a; };
@@ -74,43 +43,43 @@
       return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}.${String(cs).padStart(2,'0')}`;
     };
 
-    // 12 вопросов (три исключены по вашей просьбе)
+    // Банк из 12 вопросов: три из вашего списка удалены
     const BANK = [
       { stem:"Объём цилиндра равен",
-        opts:["\\\\(\\\\pi r h^2\\\\)","\\\\(2\\\\pi r^2 h\\\\)","\\\\(\\\\pi r^2 h\\\\)","\\\\(\\\\tfrac{1}{3}\\\\pi r^2 h\\\\)","\\\\(2\\\\pi r h\\\\)","\\\\(\\\\pi r(h+r)\\\\)","\\\\(\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(2\\\\pi r^2+2\\\\pi r h\\\\)"],
+        opts:["\\(\\pi r h^2\\)","\\(2\\pi r^2 h\\)","\\(\\pi r^2 h\\)","\\(\\tfrac{1}{3}\\pi r^2 h\\)","\\(2\\pi r h\\)","\\(\\pi r(h+r)\\)","\\(\\tfrac{4}{3}\\pi r^3\\)","\\(2\\pi r^2+2\\pi r h\\)"],
         correct:2 },
       { stem:"Полная площадь поверхности цилиндра равна",
-        opts:["\\\\(2\\\\pi r h+2\\\\pi r^2\\\\)","\\\\(\\\\pi r^2 h\\\\)","\\\\(2\\\\pi r h\\\\)","\\\\(\\\\pi r(h+r)\\\\)","\\\\(\\\\pi r^2+\\\\pi r h\\\\)","\\\\(4\\\\pi r^2\\\\)","\\\\(2\\\\pi r(h+2r)\\\\)","\\\\(\\\\pi r^2+2\\\\pi r\\\\)"],
+        opts:["\\(2\\pi r h+2\\pi r^2\\)","\\(\\pi r^2 h\\)","\\(2\\pi r h\\)","\\(\\pi r(h+r)\\)","\\(\\pi r^2+\\pi r h\\)","\\(4\\pi r^2\\)","\\(2\\pi r(h+2r)\\)","\\(\\pi r^2+2\\pi r\\)"],
         correct:0 },
-      { stem:"Объём цилиндра через площадь основания \\\\(S_{\\\\text{осн}}\\\\):",
-        opts:["\\\\(V=S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=2S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=\\\\tfrac{1}{3}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=S_{\\\\text{осн}}\\\\cdot 2h\\\\)","\\\\(V=\\\\tfrac{S_{\\\\text{осн}}}{2h}\\\\)","\\\\(V=\\\\tfrac{4}{3}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=S_{\\\\text{осн}}\\\\cdot \\\\pi h\\\\)","\\\\(V=S_{\\\\text{осн}}+h\\\\)"],
+      { stem:"Объём цилиндра через площадь основания \\(S_{\\text{осн}}\\):",
+        opts:["\\(V=S_{\\text{осн}}\\cdot h\\)","\\(V=2S_{\\text{осн}}\\cdot h\\)","\\(V=\\tfrac{1}{3}S_{\\text{осн}}\\cdot h\\)","\\(V=S_{\\text{осн}}\\cdot 2h\\)","\\(V=\\tfrac{S_{\\text{осн}}}{2h}\\)","\\(V=\\tfrac{4}{3}S_{\\text{осн}}\\cdot h\\)","\\(V=S_{\\text{осн}}\\cdot \\pi h\\)","\\(V=S_{\\text{осн}}+h\\)"],
         correct:0 },
-      { stem:"Полная площадь поверхности цилиндра через \\\\(S_{\\\\text{осн}}\\\\):",
-        opts:["\\\\(S_{\\\\text{полн}}=2S_{\\\\text{осн}}+2\\\\pi r h\\\\)","\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+2\\\\pi r h\\\\)","\\\\(S_{\\\\text{полн}}=2S_{\\\\text{осн}}+\\\\pi r h\\\\)","\\\\(S_{\\\\text{полн}}=2S_{\\\\text{осн}}+P_{\\\\text{осн}}\\\\,h\\\\)","\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+\\\\pi r^2\\\\)","\\\\(S_{\\\\text{полн}}=4S_{\\\\text{осн}}\\\\)","\\\\(S_{\\\\text{полн}}=2S_{\\\\text{осн}}+2\\\\pi r^2 h\\\\)","\\\\(S_{\\\\text{полн}}=2\\\\pi r(h+r)\\\\)"],
+      { stem:"Полная площадь поверхности цилиндра через \\(S_{\\text{осн}}\\):",
+        opts:["\\(S_{\\text{полн}}=2S_{\\text{осн}}+2\\pi r h\\)","\\(S_{\\text{полн}}=S_{\\text{осн}}+2\\pi r h\\)","\\(S_{\\text{полн}}=2S_{\\text{осн}}+\\pi r h\\)","\\(S_{\\text{полн}}=2S_{\\text{осн}}+P_{\\text{осн}}\\,h\\)","\\(S_{\\text{полн}}=S_{\\text{осн}}+\\pi r^2\\)","\\(S_{\\text{полн}}=4S_{\\text{осн}}\\)","\\(S_{\\text{полн}}=2S_{\\text{осн}}+2\\pi r^2 h\\)","\\(S_{\\text{полн}}=2\\pi r(h+r)\\)"],
         correct:0 },
       { stem:"Объём конуса равен",
-        opts:["\\\\(\\\\pi r^2 h\\\\)","\\\\(\\\\tfrac{1}{2}\\\\pi r^2 h\\\\)","\\\\(\\\\tfrac{1}{3}\\\\pi r^2 h\\\\)","\\\\(\\\\tfrac{2}{3}\\\\pi r^2 h\\\\)","\\\\(\\\\pi r l\\\\)","\\\\(\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(\\\\pi r(h+l)\\\\)","\\\\(2\\\\pi r h\\\\)"],
+        opts:["\\(\\pi r^2 h\\)","\\(\\tfrac{1}{2}\\pi r^2 h\\)","\\(\\tfrac{1}{3}\\pi r^2 h\\)","\\(\\tfrac{2}{3}\\pi r^2 h\\)","\\(\\pi r l\\)","\\(\\tfrac{4}{3}\\pi r^3\\)","\\(\\pi r(h+l)\\)","\\(2\\pi r h\\)"],
         correct:2 },
       { stem:"Полная площадь поверхности конуса равна",
-        opts:["\\\\(\\\\pi r l+\\\\pi r^2\\\\)","\\\\(2\\\\pi r l+\\\\pi r^2\\\\)","\\\\(\\\\pi r(l+h)\\\\)","\\\\(\\\\pi r^2 h\\\\)","\\\\(2\\\\pi r(h+r)\\\\)","\\\\(\\\\pi r^2+2\\\\pi r h\\\\)","\\\\(\\\\pi r(l+\\\\tfrac r2)\\\\)","\\\\(4\\\\pi r^2\\\\)"],
+        opts:["\\(\\pi r l+\\pi r^2\\)","\\(2\\pi r l+\\pi r^2\\)","\\(\\pi r(l+h)\\)","\\(\\pi r^2 h\\)","\\(2\\pi r(h+r)\\)","\\(\\pi r^2+2\\pi r h\\)","\\(\\pi r(l+\\tfrac r2)\\)","\\(4\\pi r^2\\)"],
         correct:0 },
-      { stem:"Объём конуса через площадь основания \\\\(S_{\\\\text{осн}}\\\\):",
-        opts:["\\\\(V=S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=\\\\tfrac{1}{2}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=\\\\tfrac{1}{3}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=\\\\tfrac{2}{3}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=S_{\\\\text{осн}}\\\\cdot 2h\\\\)","\\\\(V=\\\\tfrac{S_{\\\\text{осн}}}{3h}\\\\)","\\\\(V=\\\\tfrac{4}{3}S_{\\\\text{осн}}\\\\cdot h\\\\)","\\\\(V=S_{\\\\text{осн}}+h\\\\)"],
+      { stem:"Объём конуса через площадь основания \\(S_{\\text{осн}}\\):",
+        opts:["\\(V=S_{\\text{осн}}\\cdot h\\)","\\(V=\\tfrac{1}{2}S_{\\text{осн}}\\cdot h\\)","\\(V=\\tfrac{1}{3}S_{\\text{осн}}\\cdot h\\)","\\(V=\\tfrac{2}{3}S_{\\text{осн}}\\cdot h\\)","\\(V=S_{\\text{осн}}\\cdot 2h\\)","\\(V=\\tfrac{S_{\\text{осн}}}{3h}\\)","\\(V=\\tfrac{4}{3}S_{\\text{осн}}\\cdot h\\)","\\(V=S_{\\text{осн}}+h\\)"],
         correct:2 },
-      { stem:"Полная площадь поверхности конуса через \\\\(S_{\\\\text{осн}}\\\\) и \\\\(l\\\\):",
-        opts:["\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+\\\\pi r l\\\\)","\\\\(S_{\\\\text{полн}}=2S_{\\\\text{осн}}+\\\\pi r l\\\\)","\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+2\\\\pi r l\\\\)","\\\\(S_{\\\\text{полн}}=\\\\pi r l\\\\)","\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+\\\\pi r^2 l\\\\)","\\\\(S_{\\\\text{полн}}=2\\\\pi r(h+r)\\\\)","\\\\(S_{\\\\text{полн}}=S_{\\\\text{осн}}+\\\\pi r h\\\\)","\\\\(S_{\\\\text{полн}}=4\\\\pi r^2\\\\)"],
+      { stem:"Полная площадь поверхности конуса через \\(S_{\\text{осн}}\\) и \\(l\\):",
+        opts:["\\(S_{\\text{полн}}=S_{\\text{осн}}+\\pi r l\\)","\\(S_{\\text{полн}}=2S_{\\text{осн}}+\\pi r l\\)","\\(S_{\\text{полн}}=S_{\\text{осн}}+2\\pi r l\\)","\\(S_{\\text{полн}}=\\pi r l\\)","\\(S_{\\text{полн}}=S_{\\text{осн}}+\\pi r^2 l\\)","\\(S_{\\text{полн}}=2\\pi r(h+r)\\)","\\(S_{\\text{полн}}=S_{\\text{осн}}+\\pi r h\\)","\\(S_{\\text{полн}}=4\\pi r^2\\)"],
         correct:0 },
       { stem:"Объём прямой треугольной призмы равен",
-        opts:["\\\\(V=P_{\\\\text{осн}}\\\\,h\\\\)","\\\\(V=S_{\\\\text{осн}}\\\\,h\\\\)","\\\\(V=\\\\tfrac{1}{2}P_{\\\\text{осн}}\\\\,h\\\\)","\\\\(V=2S_{\\\\text{осн}}\\\\,h\\\\)","\\\\(V=\\\\tfrac{S_{\\\\text{осн}}}{2h}\\\\)","\\\\(V=(S_{\\\\text{осн}}+P_{\\\\text{осн}})\\\\,h\\\\)","\\\\(V=\\\\pi r^2 h\\\\)","\\\\(V=\\\\tfrac{4}{3}\\\\pi r^3\\\\)"],
+        opts:["\\(V=P_{\\text{осн}}\\,h\\)","\\(V=S_{\\text{осн}}\\,h\\)","\\(V=\\tfrac{1}{2}P_{\\text{осн}}\\,h\\)","\\(V=2S_{\\text{осн}}\\,h\\)","\\(V=\\tfrac{S_{\\text{осн}}}{2h}\\)","\\(V=(S_{\\text{осн}}+P_{\\text{осн}})\\,h\\)","\\(V=\\pi r^2 h\\)","\\(V=\\tfrac{4}{3}\\pi r^3\\)"],
         correct:1 },
       { stem:"Площадь поверхности шара равна",
-        opts:["\\\\(2\\\\pi r^2\\\\)","\\\\(3\\\\pi r^2\\\\)","\\\\(4\\\\pi r^2\\\\)","\\\\(\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(\\\\pi r^2 h\\\\)","\\\\(2\\\\pi r h\\\\)","\\\\(\\\\pi r l+\\\\pi r^2\\\\)","\\\\(8\\\\pi r^2\\\\)"],
+        opts:["\\(2\\pi r^2\\)","\\(3\\pi r^2\\)","\\(4\\pi r^2\\)","\\(\\tfrac{4}{3}\\pi r^3\\)","\\(\\pi r^2 h\\)","\\(2\\pi r h\\)","\\(\\pi r l+\\pi r^2\\)","\\(8\\pi r^2\\)"],
         correct:2 },
       { stem:"Объём шара равен",
-        opts:["\\\\(4\\\\pi r^3\\\\)","\\\\(\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(\\\\tfrac{1}{3}\\\\pi r^3\\\\)","\\\\(\\\\pi r^3\\\\)","\\\\(\\\\pi r^2 h\\\\)","\\\\(\\\\tfrac{2}{3}\\\\pi r^3\\\\)","\\\\(2\\\\pi r^3\\\\)","\\\\(4\\\\pi r^2\\\\)"],
+        opts:["\\(4\\pi r^3\\)","\\(\\tfrac{4}{3}\\pi r^3\\)","\\(\\tfrac{1}{3}\\pi r^3\\)","\\(\\pi r^3\\)","\\(\\pi r^2 h\\)","\\(\\tfrac{2}{3}\\pi r^3\\)","\\(2\\pi r^3\\)","\\(4\\pi r^2\\)"],
         correct:1 },
-      { stem:"Выберите единственную верную пару \\\\((S,V)\\\\) для шара:",
-        opts:["\\\\(S=2\\\\pi r^2,\\\\ V=\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(S=3\\\\pi r^2,\\\\ V=\\\\pi r^3\\\\)","\\\\(S=4\\\\pi r^2,\\\\ V=\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(S=4\\\\pi r^2,\\\\ V=\\\\pi r^3\\\\)","\\\\(S=2\\\\pi r^2,\\\\ V=\\\\tfrac{2}{3}\\\\pi r^3\\\\)","\\\\(S=4\\\\pi r^2,\\\\ V=2\\\\pi r^3\\\\)","\\\\(S=\\\\pi r^2,\\\\ V=\\\\tfrac{4}{3}\\\\pi r^3\\\\)","\\\\(S=4\\\\pi r^2,\\\\ V=\\\\tfrac{1}{3}\\\\pi r^3\\\\)"],
+      { stem:"Выберите единственную верную пару \\((S,V)\\) для шара:",
+        opts:["\\(S=2\\pi r^2,\\ V=\\tfrac{4}{3}\\pi r^3\\)","\\(S=3\\pi r^2,\\ V=\\pi r^3\\)","\\(S=4\\pi r^2,\\ V=\\tfrac{4}{3}\\pi r^3\\)","\\(S=4\\pi r^2,\\ V=\\pi r^3\\)","\\(S=2\\pi r^2,\\ V=\\tfrac{2}{3}\\pi r^3\\)","\\(S=4\\pi r^2,\\ V=2\\pi r^3\\)","\\(S=\\pi r^2,\\ V=\\tfrac{4}{3}\\pi r^3\\)","\\(S=4\\pi r^2,\\ V=\\tfrac{1}{3}\\pi r^3\\)"],
         correct:2 }
     ];
 
@@ -119,7 +88,7 @@
     let answers = [];
     let times = [];
     let startStamp = null;
-    let rafId = null;
+    let ticker = null;
 
     function materialize(bank){
       return bank.map(q => {
@@ -141,33 +110,21 @@
       startTimer();
     }
 
-    function startTimer(){
-      cancelAnimationFrame(rafId);
-      let last = performance.now();
-      const step = () => {
-        const now = performance.now();
-        const dt = now - last;
-        if (startStamp !== null){
-          times[cur] += dt;
-        }
-        last = now;
-        // Обновляем видимый таймер реже во избежание лишних перерисовок
-        if (!step._acc) step._acc = 0;
-        step._acc += dt;
-        if (step._acc >= 200){ // ~5 раз в секунду
-          document.querySelector(".timer").textContent = fmtTime(times[cur]);
-          step._acc = 0;
-        }
-        rafId = requestAnimationFrame(step);
-      };
+    function startTimer() {
+      stopTimer();
       startStamp = performance.now();
-      rafId = requestAnimationFrame(step);
+      ticker = setInterval(() => {
+        const now = performance.now();
+        const elapsed = times[cur] + (startStamp ? (now - startStamp) : 0);
+        document.querySelector(".timer").textContent = fmtTime(elapsed);
+      }, 80);
     }
-
-    function stopTimer(){
-      cancelAnimationFrame(rafId);
-      rafId = null;
-      startStamp = null;
+    function stopTimer() {
+      if (ticker) clearInterval(ticker), ticker = null;
+      if (startStamp !== null) {
+        times[cur] += performance.now() - startStamp;
+        startStamp = null;
+      }
     }
 
     function typeset() {
@@ -179,26 +136,24 @@
       const q = questions[cur];
       document.getElementById("qnum").textContent = `Вопрос ${cur+1} / ${total}`;
       document.querySelector(".progress > span").style.width = `${((cur)/total*100).toFixed(2)}%`;
-
-      const qt = document.querySelector(".qtext");
-      qt.textContent = q.stem;
+      document.querySelector(".qtext").textContent = q.stem;
 
       const box = document.querySelector(".opts");
       box.innerHTML = "";
       q.choiceIdxs.forEach((origIdx, i) => {
         const id = `opt_${cur}_${i}`;
         const div = document.createElement("label");
-        div.className = "opt";
+        div.className = "opt row";
         const text = q.opts[origIdx];
         div.innerHTML = `
           <input type="radio" name="q${cur}" id="${id}" value="${i}">
-          <span class="txt">${text}</span>
+          <span class="grow">${text}</span>
         `;
         const input = div.querySelector("input");
         input.checked = (answers[cur] === i);
         input.addEventListener("change", (e) => {
           answers[cur] = Number(e.target.value);
-        }, {passive:true});
+        });
         box.appendChild(div);
       });
 
@@ -209,9 +164,10 @@
 
     function goto(n) {
       if (n<0 || n>=questions.length) return;
-      // накопленное время уже в times[cur], просто переходим
+      stopTimer();
       cur = n;
       render();
+      startTimer();
     }
 
     function finish() {
@@ -258,19 +214,14 @@
       document.getElementById("report").classList.add("hidden");
       document.getElementById("quiz").classList.remove("hidden");
       document.querySelector(".progress > span").style.width = "0%";
-      times = new Array(questions.length).fill(0);
-      answers = new Array(questions.length).fill(null);
-      questions = materialize(shuffle(BANK));
-      cur = 0;
-      render();
-      startTimer();
+      prepare();
     }
 
     document.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("next").addEventListener("click", ()=>goto(cur+1), {passive:true});
-      document.getElementById("prev").addEventListener("click", ()=>goto(cur-1), {passive:true});
-      document.getElementById("finish").addEventListener("click", finish, {passive:true});
-      document.getElementById("restart").addEventListener("click", restart, {passive:true});
+      document.getElementById("next").addEventListener("click", ()=>goto(cur+1));
+      document.getElementById("prev").addEventListener("click", ()=>goto(cur-1));
+      document.getElementById("finish").addEventListener("click", finish);
+      document.getElementById("restart").addEventListener("click", restart);
       prepare();
     });
   </script>
@@ -304,21 +255,19 @@
         <span>Итоговое время: <span id="totaltime" class="timer"></span></span>
         <span>Среднее на вопрос: <span id="avgtime" class="timer"></span></span>
       </div>
-      <div class="table-wrap">
-        <table>
-          <thead>
-            <tr>
-              <th>№</th>
-              <th>Вопрос</th>
-              <th>Ваш ответ</th>
-              <th>Оценка</th>
-              <th>Время</th>
-              <th>Правильный ответ</th>
-            </tr>
-          </thead>
-          <tbody id="tbody"></tbody>
-        </table>
-      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>№</th>
+            <th>Вопрос</th>
+            <th>Ваш ответ</th>
+            <th>Оценка</th>
+            <th>Время</th>
+            <th>Правильный ответ</th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
       <div class="btns">
         <button id="restart" class="primary">Перезапустить</button>
       </div>
